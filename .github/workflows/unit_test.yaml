@@ -1,0 +1,57 @@
+name: Run Unit Tests
+
+on: [push, pull_request]
+
+jobs:
+    test:
+        name: Roda os testes unitarios no modulo python ${{ matrix.service }}
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                service: [scraper]
+        
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Set up Python 3.13
+              uses: actions/setup-python@v5
+              with:
+                python-version: "3.13"
+
+            - name: Pega o caminho do modulo a ser testado
+              id: caminho_service
+              run: |
+                echo "caminho_base=serviço-${{ matrix.service }}" >> $GITHUB_OUTPUT
+
+            - name: Instala o poetry
+              uses: abatilo/actions-poetry@v4
+
+            - name: Configura o poetry para criar o ambiente virtual
+              run: |
+                poetry config virtualenvs.create true --local
+                poetry config virtualenvs.in-project true --local
+
+            - uses: actions/cache@v4
+              name: Define um cache para o ambiente virtual baseado no poetry.lock
+              with:
+                path: ./${{ steps.caminho_service.outputs.caminho_base }}/.venv
+                key: venv-${{ hashFiles('poetry.lock') }}
+
+            - name: Instala as dependências do projeto e ativa o ambiente virtual
+              run: 
+                cd ./${{ steps.caminho_service.outputs.caminho_base }}
+                poetry install --all-groups
+                source ./.venv/bin/activate
+
+            - name: Roda a análise estática
+              run: 
+                cd ./${{ steps.caminho_service.outputs.caminho_base }}
+                make static
+                make format
+                make lint
+            
+            - name: Roda os testes unitários
+              run:
+                cd ./${{ steps.caminho_service.outputs.caminho_base }}
+                make test
+                make coverage
