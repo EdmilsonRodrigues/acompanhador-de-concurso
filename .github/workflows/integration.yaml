@@ -38,27 +38,24 @@ jobs:
                 key: venv-${{ hashFiles('poetry.lock') }}
 
             - name: Instala as dependências do projeto e ativa o ambiente virtual
-              run: 
+              run: |
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
 
                 poetry install --all-groups
-
-                source ./.venv/bin/activate
+                caminho_venv=$(poetry env activate | grep source | cut -d ' ' -f 2 | tr -d "'")
+                source $caminho_venv
 
             - name: Roda a análise estática
-              run: 
+              run: |
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
 
                 make static
-
                 make format
-
                 make lint
             
             - name: Roda os testes unitários
-              run:
+              run: |
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
 
                 make test
-
                 make coverage
