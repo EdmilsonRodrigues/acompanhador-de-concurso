@@ -1,0 +1,54 @@
+[project]
+name = "serviço-scraper"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Edmilson Monteiro Rodrigues Neto",email = "edmilson.rodriguesn38@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx[http2] (>=0.28.1,<0.29.0)",
+    "beautifulsoup4 (>=4.13.4,<5.0.0)",
+    "orjson (>=3.10.18,<4.0.0)",
+    "sqlalchemy (>=2.0.41,<3.0.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)",
+    "psycopg2 (>=2.9.10,<3.0.0)",
+    "psycopg2-binary (>=2.9.10,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.11.11"
+rich = "^14.0.0"
+mypy = "^1.16.0"
+
+
+[tool.poetry.group.testes.dependencies]
+pytest = "^8.3.5"
+factory-boy = "^3.3.3"
+pytest-anyio = "^0.0.0"
+pytest-cov = "^6.1.1"
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.format]
+quote-style = "single"
+preview = true
+
+[tool.ruff.lint]
+select = ["I", "UP", "W", "F", "E", "PT"]
+
+[tool.pytest.ini_options]
+markers = [
+    "e2e: mark to run e2e tests"
+]
+addopts = [
+    "--cov=src", 
+    "--cov-report=html"
+]
