@@ -10,6 +10,6 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --no-root
 
-COPY serviço_scraper/ .
+COPY src/ .
 
-ENTRYPOINT ["poetry", "run", "python", "app.py"]
+ENTRYPOINT ["poetry", "run", "python", "-m", "serviço_scraper.app"]

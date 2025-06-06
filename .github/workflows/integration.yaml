@@ -60,8 +60,13 @@ jobs:
                 make test
                 make check-coverage
               
-            - name: Constroi a imagem docker
+            - name: Constrói a imagem docker
               run: |
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
                 make build
+            
+            - name: Roda a aplicação dentro do ambiente docker
+              run: |
+                cd ./${{ steps.caminho_service.outputs.caminho_base }}
+                make docker-test
 

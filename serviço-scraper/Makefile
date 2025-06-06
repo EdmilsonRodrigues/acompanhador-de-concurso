@@ -45,3 +45,7 @@ check-coverage:
 .PHONY: build
 build:
 	docker build -t edmilsonrodrigues/concurso-scraper-service:${TAG} .
+
+.PHONY: docker-test
+docker-test:
+	docker compose up --exit-code-from scraper
