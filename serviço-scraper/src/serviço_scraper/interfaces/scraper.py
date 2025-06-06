@@ -11,7 +11,7 @@ class InterfaceScraper(ABC):
         self.cliente = cliente
 
     @abstractmethod
-    async def scrape_dia(cls, data: date) -> AsyncGenerator[ConteúdoDTO]:
+    def scrape_dia(cls, data: date) -> AsyncGenerator[ConteúdoDTO]:
         """
         Realiza a ação de scraping de um dia específico no Diário Oficial
             da União e retorna a resposta parseada em um gerador do DTO
