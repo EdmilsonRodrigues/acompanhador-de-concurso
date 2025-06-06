@@ -42,17 +42,23 @@ jobs:
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
 
                 poetry install --all-groups
+
                 source ./.venv/bin/activate
 
             - name: Roda a análise estática
               run: 
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
+
                 make static
+
                 make format
+
                 make lint
             
             - name: Roda os testes unitários
               run:
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
+
                 make test
+
                 make coverage
