@@ -58,4 +58,4 @@ jobs:
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
 
                 make test
-                make coverage
+                make check-coverage
