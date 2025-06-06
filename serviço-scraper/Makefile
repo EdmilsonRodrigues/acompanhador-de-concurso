@@ -1,4 +1,5 @@
 THRESHOLD_COVERAGE ?= 0.8
+TAG ?= 1.0.0
 
 .PHONY: lint
 lint:
@@ -41,3 +42,6 @@ ci-test:
 check-coverage:
 	grep "<coverage " coverage.xml | cut -d ' ' -f 6 | cut -d '=' -f 2 | tr -d '"' | awk '{ if ($$1 >= ${THRESHOLD_COVERAGE}) exit 0; else exit 1; }'
 
+.PHONY: build
+build:
+	docker build -t edmilsonrodrigues/concurso-scraper-service:${TAG} .

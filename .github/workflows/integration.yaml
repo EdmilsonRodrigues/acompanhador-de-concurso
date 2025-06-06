@@ -45,7 +45,7 @@ jobs:
                 caminho_venv=$(poetry env activate | grep source | cut -d ' ' -f 2 | tr -d "'")
                 source $caminho_venv
 
-            - name: Roda a análise estática
+            - name: Roda a análise estática e formata o código
               run: |
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
 
@@ -53,9 +53,15 @@ jobs:
                 make format
                 make lint
             
-            - name: Roda os testes unitários
+            - name: Roda os testes unitários e e2e e verifica a cobertura
               run: |
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
 
                 make test
                 make check-coverage
+              
+            - name: Constroi a imagem docker
+              run: |
+                cd ./${{ steps.caminho_service.outputs.caminho_base }}
+                make build
+
