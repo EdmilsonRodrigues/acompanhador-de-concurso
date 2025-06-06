@@ -1,10 +1,10 @@
-name: Run Unit Tests
+name: Roda as validações para garantir que o código pode ser integrado à code base.
 
 on: [push, pull_request]
 
 jobs:
     test:
-        name: Roda os testes unitarios no modulo python ${{ matrix.service }}
+        name: Roda os testes no modulo python ${{ matrix.service }}
         runs-on: ubuntu-latest
         strategy:
             matrix:
@@ -40,6 +40,7 @@ jobs:
             - name: Instala as dependências do projeto e ativa o ambiente virtual
               run: 
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
+
                 poetry install --all-groups
                 source ./.venv/bin/activate
 
