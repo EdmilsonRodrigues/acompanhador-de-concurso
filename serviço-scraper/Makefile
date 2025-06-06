@@ -2,38 +2,38 @@ THRESHOLD_COVERAGE ?= 0.8
 
 .PHONY: lint
 lint:
-	ruff check
+	poetry run ruff check
 
 .PHONY: format
 format:
-	ruff format
-	ruff check --fix
-	ruff format
+	poetry run ruff format
+	poetry run ruff check --fix
+	poetry run ruff format
 
 .PHONY: static
 static:
-	mypy src
+	poetry run mypy src
 
 .PHONY: unit
 unit:
-	pytest -m "not e2e"
+	poetry run pytest -m "not e2e"
 
 .PHONY: e2e
 e2e:
 	docker compose up db -d
-	DATABASE_URL="postgresql://postgres:postgres@localhost:5432/scraper" pytest -m e2e
+	DATABASE_URL="postgresql://postgres:postgres@localhost:5432/scraper" poetry run pytest -m e2e
 	docker compose down
 
 .PHONY: test
 test:
 	docker compose up db -d
-	DATABASE_URL="postgresql://postgres:postgres@localhost:5432/scraper" pytest
+	DATABASE_URL="postgresql://postgres:postgres@localhost:5432/scraper" poetry run pytest
 	docker compose down
 
 .PHONY: ci-test
 ci-test:
 	docker compose up db -d
-	DATABASE_URL="postgresql://postgres:postgres@localhost:5432/scraper" pytest  --cov-report=xml
+	DATABASE_URL="postgresql://postgres:postgres@localhost:5432/scraper" poetry run pytest  --cov-report=xml
 	docker compose down
 
 

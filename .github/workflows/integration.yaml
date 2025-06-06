@@ -49,8 +49,6 @@ jobs:
               run: |
                 cd ./${{ steps.caminho_service.outputs.caminho_base }}
 
-                which python3
-
                 make static
                 make format
                 make lint
