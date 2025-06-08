@@ -1,0 +1,36 @@
+[project]
+name = "modelo-estado"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Edmilson Monteiro Rodrigues Neto", email = "edmilson.rodriguesn38@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "spacy (>=3.8.7,<4.0.0)",
+    "boto3 (>=1.38.32,<2.0.0)",
+    "pandas (>=2.3.0,<3.0.0)",
+    "scikit-learn (>=1.7.0,<2.0.0)",
+    "feature-engine (>=1.8.3,<2.0.0)",
+    "sqlalchemy (>=2.0.41,<3.0.0)"
+]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.format]
+quote-style = "single"
+preview = true
+
+[tool.ruff.lint]
+select = ["I", "UP", "W", "F", "E", "PT"]
+
+
+[tool.poetry.group.dev.dependencies]
+psycopg2 = "^2.9.10"
+psycopg2-binary = "^2.9.10"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
