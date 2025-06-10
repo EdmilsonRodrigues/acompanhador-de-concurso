@@ -1,0 +1,5 @@
+ENVIRONMENT="Development"
+RSA_PRIVATE_KEY="private_key.pem"
+PEM_PASSWORD_BYTES="c6eb6b4ae092c369a3629c2ec968ea76cfedeb6407f94221b4d01f9c35e3b2ea"
+SECRET_OCID=""
+
