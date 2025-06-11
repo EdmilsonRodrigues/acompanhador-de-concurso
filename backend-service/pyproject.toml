@@ -17,7 +17,8 @@ dependencies = [
     "oci (>=2.154.0,<3.0.0)",
     "orjson (>=3.10.18,<4.0.0)",
     "pyjwt (>=2.10.1,<3.0.0)",
-    "freezegun (>=1.5.2,<2.0.0)"
+    "freezegun (>=1.5.2,<2.0.0)",
+    "stripe (>=12.2.0,<13.0.0)"
 ]
 
 
@@ -49,5 +50,6 @@ select = ["I", "UP", "W", "F", "E", "PT"]
 [tool.pytest.ini_options]
 addopts = [
     "--cov=backend_service", 
-    "--cov-report=html"
+    "--cov-report=html",
+    "-vvv"
 ]

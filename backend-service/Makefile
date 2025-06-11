@@ -42,3 +42,8 @@ build:
 .PHONY: docker-test
 docker-test:
 	docker compose up --exit-code-from scraper
+
+
+.PHONY: run
+run:
+	fastapi run backend_service/main.py

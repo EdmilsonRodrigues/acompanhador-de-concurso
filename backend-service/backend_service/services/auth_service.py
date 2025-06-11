@@ -20,7 +20,8 @@ from ..exceptions.services_exceptions import (
 )
 from ..services.logging_service import get_logger
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/login')
+AuthToken = Annotated[str, Depends(oauth2_scheme)]
 LoginForm = Annotated[OAuth2PasswordRequestForm, Depends()]
 logger = get_logger()
 

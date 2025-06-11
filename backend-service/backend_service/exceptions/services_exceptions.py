@@ -14,3 +14,19 @@ class InvalidTokenException(ServiceException):
 
 class UnmatchedPasswordException(ServiceException):
     default_message = 'Unmatched password'
+
+
+class FailedListingStripePricesException(ServiceException):
+    default_message = 'Failed listing stripe prices'
+
+
+class FailedCreatingCheckoutSessionException(ServiceException):
+    default_message = 'Failed creating checkout session'
+
+
+class FailedCreatingPortalSessionException(ServiceException):
+    default_message = 'Failed creating portal session'
+
+
+class FailedGettingWebhookException(ServiceException):
+    default_message = 'Failed getting webhook'

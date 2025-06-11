@@ -1,11 +1,19 @@
 from typing import Annotated
 
+import sqlalchemy
 from fastapi import APIRouter, Body
 from sqlmodel import select
 
 from ..dependencies.services_dependencies import ORMSessionDependency
-from ..exceptions.controller_exceptions import UnauthorizedException
-from ..exceptions.services_exceptions import UnmatchedPasswordException, InvalidTokenException
+from ..exceptions.controller_exceptions import (
+    InvalidRefreshTokenException,
+    UserWithEmailAlreadyExistsException,
+    WrongCredentialsException,
+)
+from ..exceptions.services_exceptions import (
+    InvalidTokenException,
+    UnmatchedPasswordException,
+)
 from ..models.user_model import User, UserCreate
 from ..services.auth_service import (
     LoginForm,
@@ -26,8 +34,12 @@ router = APIRouter(
 @router.post('/signin', status_code=201)
 async def signin(user: UserCreate, orm_session: ORMSessionDependency):
     db_user = User.model_validate(user)
-    orm_session.add(db_user)
-    orm_session.commit()
+    try:
+        orm_session.add(db_user)
+        orm_session.commit()
+    except sqlalchemy.exc.IntegrityError as exc:
+        raise UserWithEmailAlreadyExistsException from exc
+
     return {'success': True}
 
 
@@ -36,11 +48,12 @@ async def login(form_data: LoginForm, orm_session: ORMSessionDependency):
     statement = select(User).where(User.email == form_data.username)
     user = orm_session.exec(statement).one_or_none()
     if user is None:
-        raise UnauthorizedException
+        raise WrongCredentialsException
+
     try:
         check_password(form_data.password, user.password)
     except UnmatchedPasswordException as exc:
-        raise UnauthorizedException from exc
+        raise WrongCredentialsException from exc
 
     return {
         'access_token': generate_auth_token(user.id),
@@ -57,7 +70,7 @@ async def refresh_session(
     try:
         user_id = decode_jwt_token(refresh_token)
     except InvalidTokenException as exc:
-        raise UnauthorizedException from exc
+        raise InvalidRefreshTokenException from exc
 
     return {
         'access_token': generate_auth_token(user_id),

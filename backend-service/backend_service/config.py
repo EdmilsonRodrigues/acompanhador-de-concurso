@@ -16,10 +16,14 @@ class Environment(Enum):
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file='.env', env_ignore_empty=True)
+    model_config = SettingsConfigDict(
+        env_file='.env', env_ignore_empty=True, extra='ignore'
+    )
 
     ENVIRONMENT: Environment = Environment.DEVELOPMENT
     DATABASE_URL: str = 'sqlite:///:memory:'
+    API_URL: str = 'http://localhost:8000'
+    FRONTEND_URL: str = 'http://localhost:4200'
 
     SECRET_KEY: str = os.urandom(32).hex()
     EXPIRATION_TIME: int = 60 * 60
@@ -27,7 +31,19 @@ class Settings(BaseSettings):
 
     RSA_PRIVATE_KEY: str
     PEM_PASSWORD_BYTES: bytes
-    SECRET_OCID: str
+
+
+class StripeSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_ignore_empty=True,
+        env_prefix='STRIPE_',
+        extra='ignore',
+    )
+
+    PUBLIC_KEY: str
+    SECRET_KEY: str
+    WEBHOOK_SECRET: str
 
 
 logger.info({'version': VERSION, 'environment': Environment.DEVELOPMENT.value})

@@ -31,7 +31,6 @@ async def test_fail_login_wrong_password(async_client, logged_user, faker):
     )
 
     assert login_response.status_code == 401
-    assert login_response.headers['WWW-Authenticate'] == 'Bearer'
 
 
 async def test_fail_login_user_not_exist(async_client, logged_user, faker):
@@ -41,7 +40,6 @@ async def test_fail_login_user_not_exist(async_client, logged_user, faker):
     )
 
     assert login_response.status_code == 401
-    assert login_response.headers['WWW-Authenticate'] == 'Bearer'
 
 
 async def test_refresh_session(async_client, logged_user):
@@ -55,7 +53,9 @@ async def test_refresh_session(async_client, logged_user):
     assert refresh_response.json()['token_type'] == 'bearer'
 
 
-async def test_fail_refresh_session_invalid_token(async_client, logged_user, faker):
+async def test_fail_refresh_session_invalid_token(
+    async_client, logged_user, faker
+):
     refresh_response = await async_client.post(
         '/auth/refresh', json={'refresh_token': faker.password()}
     )

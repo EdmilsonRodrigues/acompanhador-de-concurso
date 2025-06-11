@@ -4,7 +4,10 @@ from fastapi import FastAPI
 
 from .config import VERSION
 from .controllers.auth_controller import router as auth_router
+from .controllers.subscription_controller import router as subscription_router
+from .controllers.user_controller import router as user_router
 from .services.database_service import create_db_and_tables, get_engine
+from .webhooks.stripe_webhooks import router as stripe_webhook_router
 
 
 @asynccontextmanager
@@ -45,3 +48,6 @@ def healthcheck():
 
 
 app.include_router(auth_router)
+app.include_router(user_router)
+app.include_router(subscription_router)
+app.include_router(stripe_webhook_router)
