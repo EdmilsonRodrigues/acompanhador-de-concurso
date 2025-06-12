@@ -1,6 +1,10 @@
 THRESHOLD_COVERAGE ?= 0.8
 TAG ?= 1.0.0
 
+.PHONY: install
+install:
+	poetry install --all-groups
+
 .PHONY: lint
 lint:
 	poetry run ruff check

@@ -14,6 +14,7 @@ from ..sessions import Base
 from .utils import implementa
 
 ESTADO_PADRÃO = 'não avaliado'
+SUBCATEGORIA_PADRÃO = ''
 
 
 class Conteúdo(Base):
@@ -35,12 +36,14 @@ class Conteúdo(Base):
         postgresql.ARRAY(String(100)), nullable=False
     )
     estado: Mapped[str] = mapped_column(String(20), nullable=False)
+    subcategoria: Mapped[str] = mapped_column(String(20), nullable=True)
 
     def __repr__(self):
         return (
             f"<Conteúdo(id={self.id}, título='{self.título[:30]}...', "
             f"url='{self.url[:30]}...', categoria='{self.categoria}', "
-            f'data_publicação={self.data_publicação}, tags={self.tags})>'
+            f'data_publicação={self.data_publicação}, tags={self.tags})>,'
+            f'estado={self.estado}>, subcategoria={self.subcategoria})>'
         )
 
     @classmethod
@@ -56,6 +59,7 @@ class Conteúdo(Base):
             tags=conteúdo.tags,
             hierarquia=conteúdo.hierarquia,
             estado=ESTADO_PADRÃO,
+            subcategoria=SUBCATEGORIA_PADRÃO,
         )
 
 
