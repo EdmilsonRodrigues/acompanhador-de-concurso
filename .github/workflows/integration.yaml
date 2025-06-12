@@ -49,12 +49,16 @@ jobs:
               with:
                 path: ./${{ matrix.service }}/.mypy_cache
                 key: mypy-cache-${{ steps.hash.outputs.hash }}
+                restore-keys: |
+                  mypy-cache-
 
             - name: Cache ruff cache
               uses: actions/cache@v4
               with:
                 path: ./${{ matrix.service }}/.ruff_cache
                 key: ruff-cache-${{ steps.hash.outputs.hash }}
+                restore-keys: |
+                  ruff-cache-
 
             - name: Install dependencies
               run: |
