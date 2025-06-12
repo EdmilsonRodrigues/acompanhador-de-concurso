@@ -31,7 +31,6 @@ jobs:
             - name: Start Docker daemon
               run: sudo systemctl start docker
 
-            # Give Docker a moment to start up
             - name: Wait for Docker
               run: docker info
 
