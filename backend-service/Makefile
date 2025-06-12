@@ -37,11 +37,11 @@ check-coverage:
 
 .PHONY: build
 build:
-	docker build -t edmilsonrodrigues/concurso-scraper-service:${TAG} .
+	echo "Build not implemented yet"
 
 .PHONY: docker-test
 docker-test:
-	docker compose up --exit-code-from scraper
+	echo "Docker Test not implemented yet"
 
 .PHONY: run
 run:
