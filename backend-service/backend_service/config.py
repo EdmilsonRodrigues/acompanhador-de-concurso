@@ -13,6 +13,7 @@ logger = get_logger()
 
 
 class Environment(Enum):
+    TESTING = 'Testing'
     DEVELOPMENT = 'Development'
     PRODUCTION = 'Production'
 

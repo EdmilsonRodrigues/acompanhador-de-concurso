@@ -80,6 +80,9 @@ def check_password(password: str, hashed_password: str) -> None:
 
 def _get_rsa_private_key() -> bytes:  # pragma: no cover
     settings = Settings()
+    if settings.ENVIRONMENT == Environment.TESTING:
+        return settings.RSA_PRIVATE_KEY.encode('utf-8')
+
     if settings.ENVIRONMENT == Environment.DEVELOPMENT:
         logger.info('Loading private key from file')
         with Path(settings.RSA_PRIVATE_KEY).open(mode='rb') as f:
