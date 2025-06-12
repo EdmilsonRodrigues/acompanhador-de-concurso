@@ -81,6 +81,9 @@ jobs:
                 cd ./${{ matrix.service }}
 
                 make unit
+              env:
+                RSA_PRIVATE_KEY: ${{ secrets.RSA_PRIVATE_KEY_PEM }}
+                PEM_PASSWORD_BYTES: ${{ secrets.RSA_PRIVATE_KEY_PEM_PASSWORD }}
             
             - name: Run tests and check coverage
               run: |
@@ -89,6 +92,13 @@ jobs:
                 make ci-test
                 make check-coverage
               
+              env:
+                RSA_PRIVATE_KEY: ${{ secrets.RSA_PRIVATE_KEY_PEM }}
+                PEM_PASSWORD_BYTES: ${{ secrets.RSA_PRIVATE_KEY_PEM_PASSWORD }}
+                STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+                STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+                STRIPE_WEBHOOK_SECRET: "nothing to see here"
+
             - name: Builds docker image
               run: |
                 cd ./${{ matrix.service }}
