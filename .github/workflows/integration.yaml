@@ -17,6 +17,24 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
+            - name: Stop Docker daemon
+              run: sudo systemctl stop docker
+
+            - name: Cache Docker images
+              uses: actions/cache@v4
+              with:
+                path: /var/lib/docker
+                key: docker-${{ hashFiles(format('{0}/poetry.lock', matrix.service)) }}-${{ hashFiles(format('{0}/compose.yaml', matrix.service)) }}${{ hashFiles(format('{0}/Dockerfile', matrix.service)) }}
+                restore-keys: |
+                  docker-
+
+            - name: Start Docker daemon
+              run: sudo systemctl start docker
+
+            # Give Docker a moment to start up
+            - name: Wait for Docker
+              run: docker info
+
             - name: Set up Python 3.13
               uses: actions/setup-python@v5
               with:
@@ -42,7 +60,7 @@ jobs:
               id: hash
               run: |
                 CODE_HASH=${{ hashFiles(format('{0}/**/*.py', matrix.service)) }}-${{ hashFiles(format('{0}/pyproject.toml', matrix.service)) }}-${{ hashFiles(format('{0}/poetry.lock', matrix.service)) }}
-                echo "hash=$CODE_HASH" >> $GITHUB_OUTPUT              
+                echo "hash=$CODE_HASH" >> $GITHUB_OUTPUT
 
             - name: Cache mypy cache
               uses: actions/cache@v4
