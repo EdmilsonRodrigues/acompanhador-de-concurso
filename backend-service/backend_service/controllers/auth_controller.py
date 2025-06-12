@@ -47,7 +47,7 @@ async def signin(user: UserCreate, orm_session: ORMSessionDependency):
 async def login(form_data: LoginForm, orm_session: ORMSessionDependency):
     statement = select(User).where(User.email == form_data.username)
     user = orm_session.exec(statement).one_or_none()
-    if user is None:
+    if user is None or user.id is None:
         raise WrongCredentialsException
 
     try:

@@ -1,6 +1,8 @@
 import os
 from enum import Enum
+from typing import Annotated
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .services.logging_service import get_logger
@@ -29,8 +31,8 @@ class Settings(BaseSettings):
     EXPIRATION_TIME: int = 60 * 60
     REFRESH_TOKEN_EXPIRATION_TIME: int = 60 * 60 * 24 * 7
 
-    RSA_PRIVATE_KEY: str
-    PEM_PASSWORD_BYTES: bytes
+    RSA_PRIVATE_KEY: Annotated[str, Field()]
+    PEM_PASSWORD_BYTES: Annotated[bytes, Field()]
 
 
 class StripeSettings(BaseSettings):
@@ -41,9 +43,9 @@ class StripeSettings(BaseSettings):
         extra='ignore',
     )
 
-    PUBLIC_KEY: str
-    SECRET_KEY: str
-    WEBHOOK_SECRET: str
+    PUBLIC_KEY: Annotated[str, Field()]
+    SECRET_KEY: Annotated[str, Field()]
+    WEBHOOK_SECRET: Annotated[str, Field()]
 
 
 logger.info({'version': VERSION, 'environment': Environment.DEVELOPMENT.value})

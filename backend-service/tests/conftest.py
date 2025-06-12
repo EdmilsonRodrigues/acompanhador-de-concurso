@@ -15,6 +15,7 @@ from backend_service.services.database_service import (
 pytest_plugins = [
     'tests.fixtures.user_fixtures',
     'tests.fixtures.subscription_fixtures',
+    'tests.fixtures.search_alerts_fixtures',
 ]
 
 

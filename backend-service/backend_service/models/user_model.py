@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from pydantic import BeforeValidator, EmailStr
+from pydantic import BaseModel, BeforeValidator, EmailStr
 from sqlmodel import Field, SQLModel
 
 from ..services.auth_service import hash_password
@@ -32,7 +32,7 @@ class UserCreate(UserBase):
     password: Annotated[HashedPassword, Field()]
 
 
-class UserUpdate(UserBase):
+class UserUpdate(BaseModel):
     name: Annotated[str | None, Field()] = None
-    email: Annotated[str | None, Field()] = None
+    email: Annotated[EmailStr | None, Field()] = None
     password: Annotated[str | None, Field()] = None

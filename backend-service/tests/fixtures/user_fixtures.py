@@ -32,9 +32,7 @@ def logged_user(user, orm_session) -> User:
     orm_session.add(user)
     orm_session.commit()
     orm_session.refresh(user)
-    yield replace(user, password=old_password)
-    orm_session.delete(user)
-    orm_session.commit()
+    return replace(user, password=old_password)
 
 
 @pytest.fixture

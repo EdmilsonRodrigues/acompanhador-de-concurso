@@ -54,7 +54,7 @@ def get_logger(debug: bool = False) -> logging.Logger:
     handler.setFormatter(formatter)
 
     original_make_record = logger.makeRecord
-    logger.makeRecord = json_make_record
+    setattr(logger, 'makeRecord', json_make_record)
 
     logger.addHandler(handler)
 

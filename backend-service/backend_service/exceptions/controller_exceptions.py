@@ -48,3 +48,8 @@ class UserNotFoundException(ControllerException):
 class SubscriptionNotFoundException(ControllerException):
     status_code = status.HTTP_404_NOT_FOUND
     detail = 'Subscription not found'
+
+
+class SearchAlertNotFoundException(ControllerException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = 'Search alert not found'

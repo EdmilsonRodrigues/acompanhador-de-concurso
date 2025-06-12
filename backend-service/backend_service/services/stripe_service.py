@@ -25,7 +25,9 @@ def find_stripe_prices(lookup_key: str):
     return prices
 
 
-def create_checkout_session(price: stripe.APIResource, user_id: int):
+def create_checkout_session(
+    price: stripe.Price, user_id: int
+) -> stripe.checkout.Session:
     try:
         checkout_session = stripe.checkout.Session.create(
             line_items=[{'price': price.id, 'quantity': 1}],
@@ -33,14 +35,16 @@ def create_checkout_session(price: stripe.APIResource, user_id: int):
             success_url=Settings().FRONTEND_URL
             + '/subscriptions/success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url=Settings().FRONTEND_URL + '/subscriptions/cancel',
-            metadata={'user_id': user_id},
+            metadata={'user_id': str(user_id)},
         )
     except Exception as exc:  # pragma: no cover
         raise FailedCreatingCheckoutSessionException from exc
     return checkout_session
 
 
-def create_customer_portal_session(customer_id: str) -> stripe.APIResource:
+def create_customer_portal_session(
+    customer_id: str,
+) -> stripe.billing_portal.Session:
     try:
         portal_session = stripe.billing_portal.Session.create(
             customer=customer_id,

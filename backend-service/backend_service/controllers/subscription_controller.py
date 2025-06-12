@@ -24,11 +24,13 @@ def checkout_session(
     lookup_key: Annotated[str, Body(embed=True)],
     client_session: ClientSessionDependency,
 ):
+    assert client_session.id
     prices = find_stripe_prices(lookup_key)
 
     checkout_session = create_checkout_session(
         prices.data[0], client_session.id
     )
+    assert checkout_session.url
 
     return RedirectResponse(url=checkout_session.url, status_code=303)
 

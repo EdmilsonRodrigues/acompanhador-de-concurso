@@ -14,7 +14,7 @@ class SubscriptionFactory(factory.Factory):
 
 
 @pytest.fixture
-async def subscription(logged_user) -> Subscription:
+def subscription(logged_user) -> Subscription:
     return SubscriptionFactory(user_id=logged_user.id)
 
 

@@ -29,6 +29,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.16.0"
 ruff = "^0.11.13"
+pydantic = {extras = ["mypy"], version = "^2.11.5"}
 
 
 [tool.poetry.group.tests.dependencies]
@@ -53,3 +54,8 @@ addopts = [
     "--cov-report=html",
     "-vvv"
 ]
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+follow_untyped_imports = true
+

@@ -106,11 +106,13 @@ def _get_rsa_private_key() -> bytes:  # pragma: no cover
 def _load_private_key_from_pem_bytes(
     private_key_bytes: bytes,
 ) -> rsa.RSAPrivateKey:
-    return serialization.load_pem_private_key(
+    key = serialization.load_pem_private_key(
         private_key_bytes,
         password=Settings().PEM_PASSWORD_BYTES,
         backend=default_backend(),
     )
+    assert isinstance(key, rsa.RSAPrivateKey)
+    return key
 
 
 RSA_PRIVATE_KEY = _load_private_key_from_pem_bytes(_get_rsa_private_key())
@@ -169,7 +171,7 @@ def decode_jwt_token(token: str) -> int:
     return int(user_id)
 
 
-def _generate_jwt_token(subject: Any, expiration_time: int) -> str:
+def _generate_jwt_token(subject: Any, expiration_time: datetime) -> str:
     token = jwt.encode(
         {
             'sub': str(subject),
