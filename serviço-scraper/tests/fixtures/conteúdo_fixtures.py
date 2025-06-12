@@ -1,4 +1,5 @@
 import json
+from itertools import chain
 from pathlib import Path
 
 import factory
@@ -10,7 +11,11 @@ from serviço_scraper.dtos.conteúdo import ConteúdoCruDTO, ConteúdoDTO
 fake = faker.Faker()
 
 
-tipos = json.load(Path('arquivos', 'tipos.json').open())
+tipos = list(
+    chain(
+        json.load(Path('arquivos', 'categorias.json').open()).values(),
+    )
+)
 
 
 class FakeConteúdoCruDTO(factory.Factory):
