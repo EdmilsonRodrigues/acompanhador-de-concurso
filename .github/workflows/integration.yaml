@@ -84,6 +84,7 @@ jobs:
               env:
                 RSA_PRIVATE_KEY: ${{ secrets.RSA_PRIVATE_KEY_PEM }}
                 PEM_PASSWORD_BYTES: ${{ secrets.RSA_PRIVATE_KEY_PEM_PASSWORD }}
+                ENVIRONMENT: "Testing"
             
             - name: Run tests and check coverage
               run: |
@@ -98,6 +99,7 @@ jobs:
                 STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
                 STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
                 STRIPE_WEBHOOK_SECRET: "nothing to see here"
+                ENVIRONMENT: "Testing"
 
             - name: Builds docker image
               run: |
