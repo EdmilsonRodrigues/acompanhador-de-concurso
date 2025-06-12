@@ -86,9 +86,6 @@ jobs:
                 make install
 
                 eval $(poetry env activate)
-                
-                ls -la
-                poetry env activate
 
             - name: Run static tests
               run: |
