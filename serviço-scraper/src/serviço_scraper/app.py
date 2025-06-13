@@ -15,7 +15,7 @@ from .serviços.repositório_sqlalchemy import Conteúdo, ConteúdoRepositório
 from .sessions import get_motor
 
 
-async def main(
+async def _main(
     ClienteHTTP: type[InterfaceClienteHTTP],
     Scraper: type[InterfaceScraper],
     Categorizador: type[InterfaceCategorizador],
@@ -41,8 +41,8 @@ async def main(
             ])
 
 
-async def main_padrão():
-    await main(
+async def main():
+    await _main(
         ClienteHTTP=ClienteHTTPX,
         Scraper=DOUScraper,
         Repositório=ConteúdoRepositório,
@@ -52,4 +52,4 @@ async def main_padrão():
 
 
 if __name__ == '__main__':
-    asyncio.run(main_padrão())
+    asyncio.run(main())

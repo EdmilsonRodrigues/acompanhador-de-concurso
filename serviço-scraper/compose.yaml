@@ -7,6 +7,8 @@ services:
       POSTGRES_DB: scraper
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   
   scraper:
     build: .
@@ -14,3 +16,8 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/scraper
     depends_on:
       - db
+
+volumes:
+  postgres_data:
+    driver: local
+

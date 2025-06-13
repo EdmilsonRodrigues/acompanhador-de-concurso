@@ -1,6 +1,6 @@
 [project]
 name = "serviço-scraper"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
 authors = [
     {name = "Edmilson Monteiro Rodrigues Neto",email = "edmilson.rodriguesn38@gmail.com"}

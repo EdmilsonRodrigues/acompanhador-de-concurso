@@ -1,72 +1,135 @@
-name: Roda as validações para garantir que o código pode ser integrado à code base.
+name: Run all validations to assure the code can be integrated to the codebase
 
 on: [push, pull_request]
 
 jobs:
     test:
-        name: Roda os testes no modulo python ${{ matrix.service }}
+        name: Run tests on python module ${{ matrix.service }}
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                service: [scraper]
+                service: [
+                  "serviço-scraper",
+                  "backend-service"
+                ]
         
         steps:
-            - uses: actions/checkout@v4
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Stop Docker daemon
+              run: sudo systemctl stop docker
+
+            - name: Cache Docker images
+              uses: actions/cache@v4
+              with:
+                path: /var/lib/docker
+                key: docker-${{ hashFiles(format('{0}/poetry.lock', matrix.service)) }}-${{ hashFiles(format('{0}/compose.yaml', matrix.service)) }}${{ hashFiles(format('{0}/Dockerfile', matrix.service)) }}
+                restore-keys: |
+                  docker-
+
+            - name: Start Docker daemon
+              run: sudo systemctl start docker
+
+            - name: Wait for Docker
+              run: docker info
 
             - name: Set up Python 3.13
               uses: actions/setup-python@v5
               with:
                 python-version: "3.13"
 
-            - name: Pega o caminho do modulo a ser testado
-              id: caminho_service
-              run: |
-                echo "caminho_base=serviço-${{ matrix.service }}" >> $GITHUB_OUTPUT
-
-            - name: Instala o poetry
+            - name: Install poetry
               uses: abatilo/actions-poetry@v4
 
-            - name: Configura o poetry para criar o ambiente virtual
+            - name: Configure poetry
               run: |
+                cd ./${{ matrix.service }}
+
                 poetry config virtualenvs.create true --local
                 poetry config virtualenvs.in-project true --local
 
-            - uses: actions/cache@v4
-              name: Define um cache para o ambiente virtual baseado no poetry.lock
+            - name: Cache venv
+              uses: actions/cache@v4
               with:
-                path: ./${{ steps.caminho_service.outputs.caminho_base }}/.venv
-                key: venv-${{ hashFiles('poetry.lock') }}
+                path: ./${{ matrix.service }}/.venv
+                key: venv-${{ hashFiles(format('{0}/poetry.lock', matrix.service)) }}
+                restore-keys: |
+                  venv-
 
-            - name: Instala as dependências do projeto e ativa o ambiente virtual
+            - name: Hash service code
+              id: hash
               run: |
-                cd ./${{ steps.caminho_service.outputs.caminho_base }}
+                CODE_HASH=${{ hashFiles(format('{0}/**/*.py', matrix.service)) }}-${{ hashFiles(format('{0}/pyproject.toml', matrix.service)) }}-${{ hashFiles(format('{0}/poetry.lock', matrix.service)) }}
+                echo "hash=$CODE_HASH" >> $GITHUB_OUTPUT
 
-                poetry install --all-groups
-                caminho_venv=$(poetry env activate | grep source | cut -d ' ' -f 2 | tr -d "'")
-                source $caminho_venv
+            - name: Cache mypy cache
+              uses: actions/cache@v4
+              with:
+                path: ./${{ matrix.service }}/.mypy_cache
+                key: mypy-cache-${{ steps.hash.outputs.hash }}
+                restore-keys: |
+                  mypy-cache-
 
-            - name: Roda a análise estática e formata o código
+            - name: Cache ruff cache
+              uses: actions/cache@v4
+              with:
+                path: ./${{ matrix.service }}/.ruff_cache
+                key: ruff-cache-${{ steps.hash.outputs.hash }}
+                restore-keys: |
+                  ruff-cache-
+
+            - name: Install dependencies
               run: |
-                cd ./${{ steps.caminho_service.outputs.caminho_base }}
+                cd ./${{ matrix.service }}
+
+                make install
+
+                eval $(poetry env activate)
+
+            - name: Run static tests
+              run: |
+                cd ./${{ matrix.service }}
 
                 make static
                 make format
                 make lint
-            
-            - name: Roda os testes unitários e e2e e verifica a cobertura
-              run: |
-                cd ./${{ steps.caminho_service.outputs.caminho_base }}
 
-                make test
+            - name: Run unit tests
+              run: |
+                cd ./${{ matrix.service }}
+
+                make unit
+              env:
+                RSA_PRIVATE_KEY: ${{ secrets.RSA_PRIVATE_KEY_PEM }}
+                PEM_PASSWORD_BYTES: ${{ secrets.RSA_PRIVATE_KEY_PEM_PASSWORD }}
+                STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+                STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+                STRIPE_WEBHOOK_SECRET: "nothing to see here"
+                ENVIRONMENT: "Testing"
+            
+            - name: Run tests and check coverage
+              run: |
+                cd ./${{ matrix.service }}
+
+                make ci-test
                 make check-coverage
               
-            - name: Constrói a imagem docker
+              env:
+                RSA_PRIVATE_KEY: ${{ secrets.RSA_PRIVATE_KEY_PEM }}
+                PEM_PASSWORD_BYTES: ${{ secrets.RSA_PRIVATE_KEY_PEM_PASSWORD }}
+                STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+                STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+                STRIPE_WEBHOOK_SECRET: "nothing to see here"
+                ENVIRONMENT: "Testing"
+
+            - name: Builds docker image
               run: |
-                cd ./${{ steps.caminho_service.outputs.caminho_base }}
+                cd ./${{ matrix.service }}
                 make build
             
-            - name: Roda a aplicação dentro do ambiente docker
+            - name: Run docker tests
               run: |
-                cd ./${{ steps.caminho_service.outputs.caminho_base }}
+                cd ./${{ matrix.service }}
                 make docker-test
 

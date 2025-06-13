@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from serviço_scraper.app import main_padrão
+from serviço_scraper.app import main
 from serviço_scraper.config import Config
 from serviço_scraper.serviços.repositório_sqlalchemy import (
     Conteúdo,
@@ -19,7 +19,7 @@ async def test_app():
     Config.DATA = DATA_TESTE
     motor = get_motor()
 
-    await main_padrão()
+    await main()
 
     abridor_de_sessão = ConteúdoRepositório(motor).open
 
