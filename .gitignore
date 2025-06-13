@@ -172,4 +172,6 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-exemplos/Página 1 - DOU - S3 133, 12072024.pdf
+
+exemplos/*
+*.pem
