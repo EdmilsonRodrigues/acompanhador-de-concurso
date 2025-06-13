@@ -25,9 +25,6 @@ async def _get_subscription(
     return subscription
 
 
-SubscriptionDependency = Annotated[Subscription, Depends(_get_subscription)]
-
-
 async def _get_search_alerts(
     client_session: ClientSessionDependency,
     orm_session: ORMSessionDependency,
@@ -48,12 +45,12 @@ async def _get_search_alerts(
 
 async def _get_search_alert(
     client_session: ClientSessionDependency,
-    alert_id: Annotated[int, Path(ge=1)],
+    search_alert_id: Annotated[int, Path(ge=1)],
     orm_session: ORMSessionDependency,
 ):
     statement = (
         select(SearchAlert)
-        .where(SearchAlert.id == alert_id)
+        .where(SearchAlert.id == search_alert_id)
         .where(SearchAlert.user_id == client_session.id)
     )
 
@@ -62,3 +59,10 @@ async def _get_search_alert(
         raise SearchAlertNotFoundException
 
     return alert
+
+
+SubscriptionDependency = Annotated[Subscription, Depends(_get_subscription)]
+SearchAlertsDependency = Annotated[
+    list[SearchAlert], Depends(_get_search_alerts)
+]
+SearchAlertDependency = Annotated[SearchAlert, Depends(_get_search_alert)]

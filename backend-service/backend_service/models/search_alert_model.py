@@ -1,6 +1,5 @@
 from typing import Annotated
 
-from pydantic import BaseModel
 from sqlmodel import Field, SQLModel
 
 
@@ -24,8 +23,3 @@ class SearchAlertPublic(SearchAlertBase):
 
 
 class SearchAlertCreate(SearchAlertBase): ...
-
-
-class SearchAlertUpdate(BaseModel):
-    area: Annotated[str | None, Field()] = None
-    state: Annotated[str | None, Field()] = None

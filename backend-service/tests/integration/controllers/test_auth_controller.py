@@ -14,6 +14,14 @@ async def test_signin(async_client, user):
     assert response.status_code == 201
 
 
+async def test_fail_signin_user_exist(async_client, logged_user):
+    payload = UserCreate(**logged_user.model_dump()).model_dump()
+    payload['password'] = logged_user.password
+
+    response = await async_client.post('/auth/signin', json=payload)
+    assert response.status_code == 409
+
+
 async def test_login(async_client, logged_user):
     login_response = await async_client.post(
         '/auth/login',

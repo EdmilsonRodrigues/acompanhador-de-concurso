@@ -4,6 +4,9 @@ from fastapi import FastAPI
 
 from .config import VERSION
 from .controllers.auth_controller import router as auth_router
+from .controllers.search_alert_controller import (
+    router as search_alert_controller,
+)
 from .controllers.subscription_controller import router as subscription_router
 from .controllers.user_controller import router as user_router
 from .services.database_service import create_db_and_tables, get_engine
@@ -51,3 +54,4 @@ app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(subscription_router)
 app.include_router(stripe_webhook_router)
+app.include_router(search_alert_controller)
