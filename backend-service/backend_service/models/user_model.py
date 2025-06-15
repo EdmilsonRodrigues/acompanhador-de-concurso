@@ -24,6 +24,7 @@ class UserPasswordUpdate(BaseModel):
     old_password: Annotated[str, Field()]
     new_password: Annotated[HashedPassword, Field()]
 
+
 class User(UserBase, table=True):
     id: Annotated[int | None, Field(primary_key=True)] = None
     password: str
