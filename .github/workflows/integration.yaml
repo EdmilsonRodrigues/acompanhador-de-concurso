@@ -61,7 +61,7 @@ jobs:
               run: |
                 cd ./${{ matrix.service }}
 
-                which poetry
+                echo $PATH
 
                 poetry config virtualenvs.create true --local
                 poetry config virtualenvs.in-project true --local
