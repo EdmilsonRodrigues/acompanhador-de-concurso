@@ -12,7 +12,7 @@ jobs:
                   "serviço-scraper",
                   "backend-service"
                 ]
-        
+
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -45,6 +45,8 @@ jobs:
             - name: Configure poetry
               run: |
                 cd ./${{ matrix.service }}
+
+                which poetry
 
                 poetry config virtualenvs.create true --local
                 poetry config virtualenvs.in-project true --local
@@ -107,14 +109,14 @@ jobs:
                 STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
                 STRIPE_WEBHOOK_SECRET: "nothing to see here"
                 ENVIRONMENT: "Testing"
-            
+
             - name: Run tests and check coverage
               run: |
                 cd ./${{ matrix.service }}
 
                 make ci-test
                 make check-coverage
-              
+
               env:
                 RSA_PRIVATE_KEY: ${{ secrets.RSA_PRIVATE_KEY_PEM }}
                 PEM_PASSWORD_BYTES: ${{ secrets.RSA_PRIVATE_KEY_PEM_PASSWORD }}
@@ -127,9 +129,8 @@ jobs:
               run: |
                 cd ./${{ matrix.service }}
                 make build
-            
+
             - name: Run docker tests
               run: |
                 cd ./${{ matrix.service }}
                 make docker-test
-
