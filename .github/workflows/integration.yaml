@@ -17,22 +17,8 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4
 
-            - name: Stop Docker daemon
-              run: sudo systemctl stop docker
-
-            - name: Cache Docker images
-              uses: actions/cache@v4
-              with:
-                path: /var/lib/docker
-                key: docker-${{ hashFiles(format('{0}/poetry.lock', matrix.service)) }}-${{ hashFiles(format('{0}/compose.yaml', matrix.service)) }}${{ hashFiles(format('{0}/Dockerfile', matrix.service)) }}
-                restore-keys: |
-                  docker-
-
-            - name: Start Docker daemon
-              run: sudo systemctl start docker
-
-            - name: Wait for Docker
-              run: docker info
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
 
             - name: Set up Python 3.13
               uses: actions/setup-python@v5
@@ -55,14 +41,11 @@ jobs:
             - name: Add poetry to PATH
               if: steps.cache-poetry.outputs.cache-hit == 'true'
               run: |
-                ls -l /opt/pipx/venvs/poetry/bin
                 echo "/opt/pipx/venvs/poetry/bin" >> $GITHUB_PATH
 
             - name: Configure poetry
               run: |
                 cd ./${{ matrix.service }}
-
-                echo $PATH
 
                 poetry config virtualenvs.create true --local
                 poetry config virtualenvs.in-project true --local
@@ -140,6 +123,16 @@ jobs:
                 STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
                 STRIPE_WEBHOOK_SECRET: "nothing to see here"
                 ENVIRONMENT: "Testing"
+
+            - name: Build Docker Image with GHA Cache
+              uses: docker/build-push-action@v6
+              with:
+                context: ./${{ matrix.service }}
+                file: ./${{ matrix.service }}/Dockerfile
+                push: false
+                tags: edmilsonrodrigues/acompanhador-concurso-${{ matrix.service }}:latest
+                cache-from: type=gha,scope=backend-build-cache-${{ matrix.service }}
+                cache-to: type=gha,mode=max,scope=backend-build-cache-${{ matrix.service }}
 
             - name: Builds docker image
               run: |
