@@ -43,8 +43,8 @@ jobs:
               uses: actions/cache@v4
               id: cache-poetry
               with:
-                path: /opt/pipx/venvs/poetry/bin/poetry
-                key: poetry-${{ matrix.service }}
+                path: /opt/pipx/venvs/poetry/
+                key: poetry-venv-${{ matrix.service }}
                 restore-keys: |
                   poetry-
 
