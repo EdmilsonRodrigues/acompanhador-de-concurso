@@ -55,7 +55,7 @@ jobs:
             - name: Add poetry to PATH
               if: steps.cache-poetry.outputs.cache-hit == 'true'
               run: |
-                alias poetry=/opt/pipx_bin/poetry
+                echo "/opt/pipx_bin" >> $GITHUB_PATH
 
             - name: Configure poetry
               run: |
