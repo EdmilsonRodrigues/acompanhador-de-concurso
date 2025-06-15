@@ -39,8 +39,23 @@ jobs:
               with:
                 python-version: "3.13"
 
+            - name: Cache Poetry
+              uses: actions/cache@v4
+              id: cache-poetry
+              with:
+                path: /opt/pipx_bin/poetry
+                key: poetry-opt-pipx-bin-poetry
+                restore-keys: |
+                  poetry-
+
             - name: Install poetry
+              if: steps.cache-poetry.outputs.cache-hit != 'true'
               uses: abatilo/actions-poetry@v4
+
+            - name: Add poetry to PATH
+              if: steps.cache-poetry.outputs.cache-hit == 'true'
+              run: |
+                alias poetry=/opt/pipx_bin/poetry
 
             - name: Configure poetry
               run: |
