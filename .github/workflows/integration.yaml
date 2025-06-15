@@ -124,16 +124,6 @@ jobs:
                 STRIPE_WEBHOOK_SECRET: "nothing to see here"
                 ENVIRONMENT: "Testing"
 
-            - name: Build Docker Image with GHA Cache
-              uses: docker/build-push-action@v6
-              with:
-                context: ./${{ matrix.service }}
-                file: ./${{ matrix.service }}/Dockerfile
-                push: false
-                tags: edmilsonrodrigues/acompanhador-concurso-${{ matrix.service }}:latest
-                cache-from: type=gha,scope=backend-build-cache-${{ matrix.service }}
-                cache-to: type=gha,mode=max,scope=backend-build-cache-${{ matrix.service }}
-
             - name: Builds docker image
               run: |
                 cd ./${{ matrix.service }}
