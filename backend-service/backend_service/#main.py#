@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
 from .config import VERSION
 from .controllers.auth_controller import router as auth_router
@@ -36,14 +35,6 @@ app = FastAPI(
     title='Backend da aplicação de acompanhamento de concursos',
     version=VERSION,
     lifespan=lifespan,
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=['*'],
-    allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*'],
 )
 
 

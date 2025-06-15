@@ -30,6 +30,7 @@ async def test_login(async_client, logged_user):
     assert login_response.status_code == 200
 
     assert login_response.json()['token_type'] == 'bearer'
+    assert login_response.cookies['refresh_token']
 
 
 async def test_fail_login_wrong_password(async_client, logged_user, faker):
@@ -39,6 +40,7 @@ async def test_fail_login_wrong_password(async_client, logged_user, faker):
     )
 
     assert login_response.status_code == 401
+    assert 'refresh_token' not in login_response.cookies
 
 
 async def test_fail_login_user_not_exist(async_client, logged_user, faker):
@@ -48,14 +50,14 @@ async def test_fail_login_user_not_exist(async_client, logged_user, faker):
     )
 
     assert login_response.status_code == 401
+    assert 'refresh_token' not in login_response.cookies
 
 
 async def test_refresh_session(async_client, logged_user):
     refresh_token = generate_refresh_token(logged_user.id)
+    async_client.cookies['refresh_token'] = refresh_token
 
-    refresh_response = await async_client.post(
-        '/auth/refresh', json={'refresh_token': refresh_token}
-    )
+    refresh_response = await async_client.post('/auth/refresh')
     assert refresh_response.status_code == 200
 
     assert refresh_response.json()['token_type'] == 'bearer'
@@ -64,7 +66,6 @@ async def test_refresh_session(async_client, logged_user):
 async def test_fail_refresh_session_invalid_token(
     async_client, logged_user, faker
 ):
-    refresh_response = await async_client.post(
-        '/auth/refresh', json={'refresh_token': faker.password()}
-    )
+    async_client.cookies['refresh_token'] = faker.password()
+    refresh_response = await async_client.post('/auth/refresh')
     assert refresh_response.status_code == 401

@@ -2,7 +2,9 @@ from fastapi import APIRouter
 
 from ..dependencies.client_session_dependencies import ClientSessionDependency
 from ..dependencies.services_dependencies import ORMSessionDependency
-from ..models.user_model import UserPublic, UserUpdate
+from ..exceptions.controller_exceptions import InvalidDataException
+from ..exceptions.services_exceptions import UnmatchedPasswordException
+from ..models.user_model import UserPasswordUpdate, UserPublic, UserUpdate
 
 router = APIRouter(
     prefix='/me',
@@ -18,12 +20,14 @@ async def read_user(client_session: ClientSessionDependency):
 
 @router.patch('/', response_model=UserPublic)
 def update_user(
-    user: UserUpdate,
+    updated_data: UserUpdate | UserPasswordUpdate,
     client_session: ClientSessionDependency,
     orm_session: ORMSessionDependency,
 ):
-    user_data = user.model_dump(exclude_unset=True)
-    client_session.sqlmodel_update(user_data)
+    try:
+        client_session.update(updated_data)
+    except UnmatchedPasswordException as exc:
+        raise InvalidDataException(str(exc)) from exc
 
     orm_session.add(client_session)
     orm_session.commit()

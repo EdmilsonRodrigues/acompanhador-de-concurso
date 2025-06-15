@@ -28,7 +28,6 @@ logger = get_logger()
 
 class TokenData(BaseModel):
     access_token: str
-    refresh_token: str
     token_type: str
 
 

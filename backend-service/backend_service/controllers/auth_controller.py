@@ -1,7 +1,8 @@
 from typing import Annotated
 
 import sqlalchemy
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Cookie
+from fastapi.responses import JSONResponse
 from sqlmodel import select
 
 from ..dependencies.services_dependencies import ORMSessionDependency
@@ -55,16 +56,24 @@ async def login(form_data: LoginForm, orm_session: ORMSessionDependency):
     except UnmatchedPasswordException as exc:
         raise WrongCredentialsException from exc
 
-    return {
-        'access_token': generate_auth_token(user.id),
-        'refresh_token': generate_refresh_token(user.id),
-        'token_type': 'bearer',
-    }
+    refresh_token = generate_refresh_token(user.id)
+    response = JSONResponse(
+        content={
+            'access_token': generate_auth_token(user.id),
+            'token_type': 'bearer',
+        }
+    )
+
+    response.set_cookie(
+        key='refresh_token', value=refresh_token, httponly=True
+    )
+
+    return response
 
 
 @router.post('/refresh', status_code=200, response_model=TokenData)
 async def refresh_session(
-    refresh_token: Annotated[str, Body(embed=True)],
+    refresh_token: Annotated[str, Cookie()],
     orm_session: ORMSessionDependency,
 ):
     try:
@@ -74,6 +83,5 @@ async def refresh_session(
 
     return {
         'access_token': generate_auth_token(user_id),
-        'refresh_token': refresh_token,
         'token_type': 'bearer',
     }

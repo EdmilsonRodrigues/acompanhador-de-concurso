@@ -19,6 +19,14 @@ class WrongCredentialsException(ControllerException):
     detail = 'Invalid username or password'
 
 
+class InvalidDataException(ControllerException):
+    status_code = status.HTTP_400_BAD_REQUEST
+
+    def __init__(self, detail: str):
+        self.detail = detail
+        super().__init__()
+
+
 class UserWithEmailAlreadyExistsException(ControllerException):
     status_code = status.HTTP_409_CONFLICT
     detail = 'User with email already exists'

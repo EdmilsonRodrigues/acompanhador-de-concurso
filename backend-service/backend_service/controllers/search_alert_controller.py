@@ -20,7 +20,7 @@ router = APIRouter(
 
 
 @router.get('/', response_model=list[SearchAlertPublic])
-async def fins_search_alerts(search_alerts: SearchAlertsDependency):
+async def find_search_alerts(search_alerts: SearchAlertsDependency):
     return search_alerts
 
 
