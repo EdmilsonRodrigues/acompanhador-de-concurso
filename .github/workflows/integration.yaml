@@ -43,8 +43,8 @@ jobs:
               uses: actions/cache@v4
               id: cache-poetry
               with:
-                path: /opt/pipx_bin/poetry
-                key: poetry-opt-pipx-bin-poetry
+                path: /opt/pipx/venvs/poetry/bin/poetry
+                key: poetry-${{ matrix.service }}
                 restore-keys: |
                   poetry-
 
@@ -55,8 +55,8 @@ jobs:
             - name: Add poetry to PATH
               if: steps.cache-poetry.outputs.cache-hit == 'true'
               run: |
-                ls -l /opt/pipx_bin
-                echo "/opt/pipx_bin" >> $GITHUB_PATH
+                ls -l /opt/pipx/venvs/poetry/bin
+                echo "/opt/pipx/venvs/poetry/bin" >> $GITHUB_PATH
 
             - name: Configure poetry
               run: |
