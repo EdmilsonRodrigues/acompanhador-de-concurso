@@ -128,7 +128,7 @@ jobs:
     strategy:
       matrix:
         service: [
-          "backend-service"
+          "backend-service",
         ]
 
     steps:
@@ -145,7 +145,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ./${{ matrix.service }}
+          context: "{{ defaultContext }}:${{ matrix.service }}"
           push: true
           tags: ${{ secrets.REGISTRY_DOMAIN }}/${{ secrets.OCI_TENANCY_NAMESPACE }}/acompanhador-concurso/${{ matrix.service }}:latest
           cache-from: type=registry,ref=${{ secrets.REGISTRY_DOMAIN }}/${{ secrets.OCI_TENANCY_NAMESPACE }}/acompanhador-concurso/${{ matrix.service }}:latest
