@@ -1,6 +1,6 @@
 [project]
 name = "backend-service"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
 authors = [
     {name = "Edmilson Monteiro Rodrigues Neto",email = "edmilson.rodriguesn38@gmail.com"}
@@ -50,7 +50,7 @@ select = ["I", "UP", "W", "F", "E", "PT"]
 
 [tool.pytest.ini_options]
 addopts = [
-    "--cov=backend_service", 
+    "--cov=backend_service",
     "--cov-report=html",
     "-vvv"
 ]
@@ -58,4 +58,3 @@ addopts = [
 [tool.mypy]
 plugins = ["pydantic.mypy"]
 follow_untyped_imports = true
-
