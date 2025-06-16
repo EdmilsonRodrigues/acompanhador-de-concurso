@@ -28,7 +28,7 @@ jobs:
         id: cache-poetry
         with:
           path: /opt/pipx/venvs/poetry/
-          key: poetry-venv-python-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/pyproject.toml') }} # Or just poetry-venv-v4 if less specific
+          key: poetry-venv-python-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/pyproject.toml') }}
           restore-keys: |
             poetry-venv-python-${{ steps.setup-python.outputs.python-version }}-
             poetry-
